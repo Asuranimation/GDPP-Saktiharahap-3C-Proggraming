@@ -6,6 +6,8 @@ public class InputManager : MonoBehaviour
     public Action<Vector2> OnMoveInput;
     public Action<bool> OnSprintInput;
     public Action OnJumpInput;
+    public Action OnClimbInput;
+    public Action OnCancelClimb;
 
     private void Update()
     {
@@ -26,32 +28,20 @@ public class InputManager : MonoBehaviour
         float verticalAxis = Input.GetAxis("Vertical");
         float horizontalAxis = Input.GetAxis("Horizontal");
         Vector2 inputAxis = new Vector2(horizontalAxis, verticalAxis);
-
-        if (OnMoveInput != null)
-            OnMoveInput(inputAxis);
+        if (OnMoveInput != null) OnMoveInput(inputAxis);
     }
 
     private void CheckSprintInput()
     {
         bool isHoldSprintInput = Input.GetKey(KeyCode.LeftShift) ||
                                  Input.GetKey(KeyCode.RightShift);
-        if (isHoldSprintInput)
-        {
-            if (OnSprintInput != null) OnSprintInput(true);
-        }
-        else
-        {
-            if (OnSprintInput != null) OnSprintInput(false);
-        }
+        if (OnSprintInput != null) OnSprintInput(isHoldSprintInput);
     }
 
     private void CheckJumpInput()
     {
-        bool isPressJumpInput = Input.GetKeyDown(KeyCode.Space);
-        if (isPressJumpInput)
-        {
+        if (Input.GetKeyDown(KeyCode.Space))
             if (OnJumpInput != null) OnJumpInput();
-        }
     }
 
     private void CheckCrouchInput()
@@ -68,7 +58,8 @@ public class InputManager : MonoBehaviour
 
     private void CheckClimbInput()
     {
-        if (Input.GetKeyDown(KeyCode.E)) Debug.Log("Climb");
+        if (Input.GetKeyDown(KeyCode.E))
+            if (OnClimbInput != null) OnClimbInput();
     }
 
     private void CheckGlideInput()
@@ -78,7 +69,8 @@ public class InputManager : MonoBehaviour
 
     private void CheckCancelInput()
     {
-        if (Input.GetKeyDown(KeyCode.C)) Debug.Log("Cancel Climb or Glide");
+        if (Input.GetKeyDown(KeyCode.C))
+            if (OnCancelClimb != null) OnCancelClimb();
     }
 
     private void CheckPunchInput()

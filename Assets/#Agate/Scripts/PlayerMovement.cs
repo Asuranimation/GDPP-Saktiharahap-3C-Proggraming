@@ -60,6 +60,7 @@ public class PlayerMovement : MonoBehaviour
         _input.OnJumpInput += Jump;
         _input.OnClimbInput += StartClimb;
         _input.OnCancelClimb += CancelClimb;
+        _cameraManager.OnChangePerspective += ChangePerspective; 
     }
 
     private void Update()
@@ -75,6 +76,7 @@ public class PlayerMovement : MonoBehaviour
         _input.OnJumpInput -= Jump;
         _input.OnClimbInput -= StartClimb;
         _input.OnCancelClimb -= CancelClimb;
+        _cameraManager.OnChangePerspective -= ChangePerspective; 
     }
 
 private void Move(Vector2 axisDirection)
@@ -85,9 +87,10 @@ private void Move(Vector2 axisDirection)
 
     if (isPlayerStanding)
     {
-        // Update Velocity untuk animator
         Vector3 velocity = new Vector3(_rigidbody.linearVelocity.x, 0, _rigidbody.linearVelocity.z);
-        _animator.SetFloat("Velocity", velocity.magnitude * axisDirection.magnitude);
+        _animator.SetFloat("Velocity", axisDirection.magnitude * velocity.magnitude);
+        _animator.SetFloat("VelocityZ", velocity.magnitude * axisDirection.y); 
+        _animator.SetFloat("VelocityX", velocity.magnitude * axisDirection.x);
 
         switch (_cameraManager.CameraState)
         {
@@ -198,6 +201,11 @@ private void Move(Vector2 axisDirection)
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+    
+    private void ChangePerspective()
+    {
+        _animator.SetTrigger("ChangePerspective");
     }
 
     private void OnDrawGizmos()

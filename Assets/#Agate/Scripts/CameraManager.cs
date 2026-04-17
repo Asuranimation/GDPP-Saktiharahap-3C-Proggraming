@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Cinemachine;
 
@@ -7,6 +8,8 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera _fpsCamera;
     [SerializeField] private CinemachineFreeLook _tpsCamera;
     [SerializeField] private InputManager _inputManager;
+
+    public Action OnChangePerspective;
 
     private void Start()
     {
@@ -32,12 +35,14 @@ public class CameraManager : MonoBehaviour
             _tpsCamera.gameObject.SetActive(true);
             _fpsCamera.gameObject.SetActive(false);
         }
+
+        if (OnChangePerspective != null)
+            OnChangePerspective();
     }
 
     public void SetFPSClampedCamera(bool isClamped, Vector3 playerRotation)
     {
         CinemachinePOV pov = _fpsCamera.GetCinemachineComponent<CinemachinePOV>();
-
         if (isClamped)
         {
             pov.m_HorizontalAxis.m_Wrap = false;

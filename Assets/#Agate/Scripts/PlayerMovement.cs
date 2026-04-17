@@ -33,6 +33,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Vector3 _climbOffset;
     [SerializeField] private float _climbSpeed;
 
+    [Header("Camera")]
+    [SerializeField] private Transform _cameraTransform;
+
     [Header("References")]
     [SerializeField] private InputManager _input;
 
@@ -44,6 +47,7 @@ public class PlayerMovement : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
         _speed = _walkSpeed;
         _playerStance = PlayerStance.Stand;
+        HideAndLockCursor();
     }
 
     private void Start()
@@ -80,9 +84,12 @@ public class PlayerMovement : MonoBehaviour
         {
             if (axisDirection.magnitude >= 0.1f)
             {
-                float rotationAngle = Mathf.Atan2(axisDirection.x, axisDirection.y) * Mathf.Rad2Deg;
+                float rotationAngle = Mathf.Atan2(axisDirection.x, axisDirection.y)
+                                      * Mathf.Rad2Deg + _cameraTransform.eulerAngles.y;
+
                 float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, rotationAngle,
                                         ref _rotationSmoothVelocity, _rotationSmoothTime);
+
                 transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
                 movementDirection = Quaternion.Euler(0f, rotationAngle, 0f) * Vector3.forward;
                 _rigidbody.AddForce(movementDirection * _speed * Time.deltaTime);
@@ -160,5 +167,39 @@ public class PlayerMovement : MonoBehaviour
                                                _stepCheckerDistance);
         if (isHitLowerStep && !isHitUpperStep)
             _rigidbody.AddForce(0, _stepForce, 0);
+    }
+
+    private void HideAndLockCursor()
+    {
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
+    
+    private void OnDrawGizmos()
+    {
+        if (_groundDetector != null)
+        {
+            Gizmos.color = _isGrounded ? Color.green : Color.red;
+            Gizmos.DrawWireSphere(_groundDetector.position, _detectorRadius);
+        }
+
+        if (_groundDetector != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawRay(_groundDetector.position, transform.forward * _stepCheckerDistance);
+        }
+
+        if (_groundDetector != null)
+        {
+            Gizmos.color = Color.cyan;
+            Gizmos.DrawRay(_groundDetector.position + _upperStepOffset, transform.forward * _stepCheckerDistance);
+        }
+
+        if (_climbDetector != null)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawRay(_climbDetector.position, transform.forward * _climbCheckDistance);
+            Gizmos.DrawWireSphere(_climbDetector.position, 0.05f);
+        }
     }
 }

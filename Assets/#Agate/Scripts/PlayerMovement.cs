@@ -142,10 +142,10 @@ public class PlayerMovement : MonoBehaviour
     private void StartClimb()
     {
         bool isInFrontOfClimbingWall = Physics.Raycast(_climbDetector.position,
-                                                        transform.forward,
-                                                        out RaycastHit hit,
-                                                        _climbCheckDistance,
-                                                        _climbableLayer);
+            transform.forward,
+            out RaycastHit hit,
+            _climbCheckDistance,
+            _climbableLayer);
         bool isNotClimbing = _playerStance != PlayerStance.Climb;
 
         if (isInFrontOfClimbingWall && _isGrounded && isNotClimbing)
@@ -155,6 +155,7 @@ public class PlayerMovement : MonoBehaviour
             _playerStance = PlayerStance.Climb;
             _rigidbody.useGravity = false;
             _cameraManager.SetFPSClampedCamera(true, transform.rotation.eulerAngles);
+            _cameraManager.SetTPSFieldOfView(70);
         }
     }
 
@@ -166,6 +167,7 @@ public class PlayerMovement : MonoBehaviour
             _rigidbody.useGravity = true;
             transform.position -= transform.forward * 1f;
             _cameraManager.SetFPSClampedCamera(false, transform.rotation.eulerAngles);
+            _cameraManager.SetTPSFieldOfView(40);
         }
     }
 

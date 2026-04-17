@@ -5,6 +5,34 @@ public class CameraManager : MonoBehaviour
 {
     [SerializeField] public CameraState CameraState;
     [SerializeField] private CinemachineVirtualCamera _fpsCamera;
+    [SerializeField] private CinemachineFreeLook _tpsCamera;
+    [SerializeField] private InputManager _inputManager;
+
+    private void Start()
+    {
+        _inputManager.OnChangePOV += SwitchCamera;
+    }
+
+    private void OnDestroy()
+    {
+        _inputManager.OnChangePOV -= SwitchCamera;
+    }
+
+    private void SwitchCamera()
+    {
+        if (CameraState == CameraState.ThirdPerson)
+        {
+            CameraState = CameraState.FirstPerson;
+            _tpsCamera.gameObject.SetActive(false);
+            _fpsCamera.gameObject.SetActive(true);
+        }
+        else
+        {
+            CameraState = CameraState.ThirdPerson;
+            _tpsCamera.gameObject.SetActive(true);
+            _fpsCamera.gameObject.SetActive(false);
+        }
+    }
 
     public void SetFPSClampedCamera(bool isClamped, Vector3 playerRotation)
     {
@@ -22,5 +50,10 @@ public class CameraManager : MonoBehaviour
             pov.m_HorizontalAxis.m_MaxValue = 180;
             pov.m_HorizontalAxis.m_Wrap = true;
         }
+    }
+
+    public void SetTPSFieldOfView(float fieldOfView)
+    {
+        _tpsCamera.m_Lens.FieldOfView = fieldOfView;
     }
 }

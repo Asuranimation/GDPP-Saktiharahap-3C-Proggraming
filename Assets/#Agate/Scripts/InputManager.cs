@@ -4,6 +4,8 @@ using UnityEngine;
 public class InputManager : MonoBehaviour
 {
     public Action<Vector2> OnMoveInput;
+    public Action<bool> OnSprintInput;
+    public Action OnJumpInput;
 
     private void Update()
     {
@@ -33,13 +35,23 @@ public class InputManager : MonoBehaviour
     {
         bool isHoldSprintInput = Input.GetKey(KeyCode.LeftShift) ||
                                  Input.GetKey(KeyCode.RightShift);
-        if (isHoldSprintInput) Debug.Log("Sprinting");
-        else Debug.Log("Not Sprinting");
+        if (isHoldSprintInput)
+        {
+            if (OnSprintInput != null) OnSprintInput(true);
+        }
+        else
+        {
+            if (OnSprintInput != null) OnSprintInput(false);
+        }
     }
 
     private void CheckJumpInput()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) Debug.Log("Jump");
+        bool isPressJumpInput = Input.GetKeyDown(KeyCode.Space);
+        if (isPressJumpInput)
+        {
+            if (OnJumpInput != null) OnJumpInput();
+        }
     }
 
     private void CheckCrouchInput()

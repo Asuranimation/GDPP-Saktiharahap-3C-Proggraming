@@ -35,6 +35,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Camera")]
     [SerializeField] private Transform _cameraTransform;
+    [SerializeField] private CameraManager _cameraManager;
 
     [Header("References")]
     [SerializeField] private InputManager _input;
@@ -82,17 +83,31 @@ public class PlayerMovement : MonoBehaviour
 
         if (isPlayerStanding)
         {
-            if (axisDirection.magnitude >= 0.1f)
+            switch (_cameraManager.CameraState)
             {
-                float rotationAngle = Mathf.Atan2(axisDirection.x, axisDirection.y)
-                                      * Mathf.Rad2Deg + _cameraTransform.eulerAngles.y;
+                case CameraState.ThirdPerson:
+                    if (axisDirection.magnitude >= 0.1f)
+                    {
+                        float rotationAngle = Mathf.Atan2(axisDirection.x, axisDirection.y)
+                                              * Mathf.Rad2Deg + _cameraTransform.eulerAngles.y;
+                        float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, rotationAngle,
+                                                ref _rotationSmoothVelocity, _rotationSmoothTime);
+                        transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
+                        movementDirection = Quaternion.Euler(0f, rotationAngle, 0f) * Vector3.forward;
+                        _rigidbody.AddForce(movementDirection * _speed * Time.deltaTime);
+                    }
+                    break;
 
-                float smoothAngle = Mathf.SmoothDampAngle(transform.eulerAngles.y, rotationAngle,
-                                        ref _rotationSmoothVelocity, _rotationSmoothTime);
+                case CameraState.FirstPerson:
+                    transform.rotation = Quaternion.Euler(0f, _cameraTransform.eulerAngles.y, 0f);
+                    Vector3 verticalDirection = axisDirection.y * transform.forward;
+                    Vector3 horizontalDirection = axisDirection.x * transform.right;
+                    movementDirection = verticalDirection + horizontalDirection;
+                    _rigidbody.AddForce(movementDirection * _speed * Time.deltaTime);
+                    break;
 
-                transform.rotation = Quaternion.Euler(0f, smoothAngle, 0f);
-                movementDirection = Quaternion.Euler(0f, rotationAngle, 0f) * Vector3.forward;
-                _rigidbody.AddForce(movementDirection * _speed * Time.deltaTime);
+                default:
+                    break;
             }
         }
         else if (isPlayerClimbing)
@@ -121,7 +136,7 @@ public class PlayerMovement : MonoBehaviour
     private void Jump()
     {
         if (_isGrounded)
-            _rigidbody.AddForce(Vector3.up * _jumpForce * Time.deltaTime);
+            _rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
     }
 
     private void StartClimb()
@@ -139,6 +154,7 @@ public class PlayerMovement : MonoBehaviour
             transform.position = hit.point - offset;
             _playerStance = PlayerStance.Climb;
             _rigidbody.useGravity = false;
+            _cameraManager.SetFPSClampedCamera(true, transform.rotation.eulerAngles);
         }
     }
 
@@ -149,6 +165,7 @@ public class PlayerMovement : MonoBehaviour
             _playerStance = PlayerStance.Stand;
             _rigidbody.useGravity = true;
             transform.position -= transform.forward * 1f;
+            _cameraManager.SetFPSClampedCamera(false, transform.rotation.eulerAngles);
         }
     }
 
@@ -174,23 +191,17 @@ public class PlayerMovement : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
-    
+
     private void OnDrawGizmos()
     {
         if (_groundDetector != null)
         {
             Gizmos.color = _isGrounded ? Color.green : Color.red;
             Gizmos.DrawWireSphere(_groundDetector.position, _detectorRadius);
-        }
 
-        if (_groundDetector != null)
-        {
             Gizmos.color = Color.yellow;
             Gizmos.DrawRay(_groundDetector.position, transform.forward * _stepCheckerDistance);
-        }
 
-        if (_groundDetector != null)
-        {
             Gizmos.color = Color.cyan;
             Gizmos.DrawRay(_groundDetector.position + _upperStepOffset, transform.forward * _stepCheckerDistance);
         }

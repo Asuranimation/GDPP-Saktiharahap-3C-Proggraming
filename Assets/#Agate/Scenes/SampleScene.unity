@@ -666,7 +666,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 914307945}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.20962857, y: 0.32740372, z: -0.0747393, w: 0.91830105}
+  m_LocalRotation: {x: 0.20962854, y: 0.32740366, z: -0.07473928, w: 0.91830105}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1553,7 +1553,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1986639151}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.27295464, y: 0.32141644, z: -0.097317055, w: 0.90150803}
+  m_LocalRotation: {x: 0.27295464, y: 0.32141647, z: -0.09731706, w: 0.901508}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1759,7 +1759,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2138365096}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.08967442, y: 0.33430073, z: -0.0319718, w: 0.9376457}
+  m_LocalRotation: {x: 0.08967441, y: 0.33430067, z: -0.031971797, w: 0.9376457}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2632,8 +2632,8 @@ GameObject:
   - component: {fileID: 543450652149971408}
   - component: {fileID: 919132148431725421}
   - component: {fileID: 919132148431725420}
-  - component: {fileID: 919132148431725419}
   - component: {fileID: 919132148431725422}
+  - component: {fileID: 919132148431725423}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -2641,53 +2641,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &919132148431725419
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132148431725418}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf8e4bb17e184db45ab44fcc1862e790, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  _walkSpeed: 350
-  _sprintSpeed: 450
-  _walkSprintTransition: 30
-  _crouchSpeed: 0
-  _rotationSmoothTime: 0.1
-  _jumpForce: 5
-  _groundDetector: {fileID: 1666930703}
-  _detectorRadius: 0.48
-  _groundLayer:
-    serializedVersion: 2
-    m_Bits: 8
-  _upperStepOffset: {x: 0, y: 0, z: 0}
-  _stepCheckerDistance: 0.1
-  _stepForce: 400
-  _climbDetector: {fileID: 1826114871}
-  _climbCheckDistance: 0.73
-  _climbableLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  _climbOffset: {x: 0, y: 1, z: 0.16}
-  _climbSpeed: 20
-  _glideSpeed: 6
-  _airDrag: 6
-  _glideRotationSpeed: {x: 0, y: 0, z: 0}
-  _minGlideRotationX: 6
-  _maxGlideRotationX: 6
-  _hitDetector: {fileID: 2484128539506211583}
-  _hitDetectorRadius: 0.62
-  _hitLayer:
-    serializedVersion: 2
-    m_Bits: 2
-  _resetComboInterval: 0.96
-  _cameraTransform: {fileID: 1745726838}
-  _cameraManager: {fileID: 1181394371}
-  _input: {fileID: 1766166638}
 --- !u!54 &919132148431725420
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2760,6 +2713,53 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &919132148431725423
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132148431725418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf8e4bb17e184db45ab44fcc1862e790, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _walkSpeed: 350
+  _sprintSpeed: 450
+  _crouchSpeed: 325
+  _walkSprintTransition: 30
+  _jumpForce: 7
+  _rotationSmoothTime: 0.1
+  _groundDetector: {fileID: 1666930703}
+  _detectorRadius: 0.62
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  _upperStepOffset: {x: 0, y: 0.3, z: 0.3}
+  _stepCheckerDistance: 0.1
+  _stepForce: 400
+  _climbDetector: {fileID: 1826114871}
+  _climbCheckDistance: 1
+  _climbableLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  _climbOffset: {x: 0, y: 1, z: 0.16}
+  _climbSpeed: 20
+  _glideSpeed: 70
+  _airDrag: 5
+  _glideRotationSpeed: {x: 20, y: 40, z: 20}
+  _minGlideRotationX: -10
+  _maxGlideRotationX: 14
+  _hitDetector: {fileID: 1826114871}
+  _hitDetectorRadius: 1
+  _hitLayer:
+    serializedVersion: 2
+    m_Bits: 17
+  _resetComboInterval: 5
+  _cameraTransform: {fileID: 330585546}
+  _cameraManager: {fileID: 1181394371}
+  _input: {fileID: 1766166638}
 --- !u!23 &961496885449637115
 MeshRenderer:
   m_ObjectHideFlags: 0

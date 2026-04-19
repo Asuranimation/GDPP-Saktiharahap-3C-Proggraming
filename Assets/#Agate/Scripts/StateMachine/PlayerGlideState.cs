@@ -27,7 +27,6 @@ public class PlayerGlideState : PlayerBaseState, IRootState
         Ctx.Animator.SetBool(Ctx.IsGlidingHash, false);
         Ctx.CameraManager.SetFPSClampedCamera(false, Ctx.transform.eulerAngles);
 
-        // reset rotation sumbu x dan z saat selesai glide
         Vector3 rot = Ctx.transform.eulerAngles;
         rot.x = 0;
         rot.z = 0;

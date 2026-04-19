@@ -75,6 +75,9 @@ public class PlayerClimbState : PlayerBaseState, IRootState
                                + (Ctx.CurrentMovementInput.y * Ctx.transform.up);
 
         Ctx.transform.position += climbDirection * Ctx.ClimbSpeed * Time.deltaTime;
+        
+        Ctx.Animator.SetFloat("ClimbingX", Ctx.CurrentMovementInput.x);
+        Ctx.Animator.SetFloat("ClimbingY", Ctx.CurrentMovementInput.y);
     }
 
     public void HandleGravity()

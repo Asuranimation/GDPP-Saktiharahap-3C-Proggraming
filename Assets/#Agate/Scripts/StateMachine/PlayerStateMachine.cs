@@ -114,7 +114,34 @@ public class PlayerStateMachine : MonoBehaviour
     public float MaxGlideRotationX { get { return _maxGlideRotationX; }}
     public CameraManager CameraManager { get { return _cameraManager; }}
     public Transform CameraTransform { get { return _cameraTransform; }}
+    
+    [Header("Jump")]
+    [SerializeField] private float _jumpForwardHoldForce = 8f;
 
+    public float JumpForwardHoldForce { get { return _jumpForwardHoldForce; }}
+
+    private bool _disableSubStateMovement = false;
+    public bool DisableSubStateMovement { get { return _disableSubStateMovement; } set { _disableSubStateMovement = value; }}
+    
+    [Header("Combo")]
+    [SerializeField] private Transform _attackPoint;
+    [SerializeField] private float _attackRadius = 0.5f;
+    [SerializeField] private LayerMask _destroyableLayer;
+    [SerializeField] private float _comboWindowTime = 0.8f;
+
+    bool _isAttackPressed = false;
+    int _isAttackingHash;
+    int _comboCountHash;
+    
+    public int IsAttackingHash { get { return _isAttackingHash; }}
+    public int ComboCountHash { get { return _comboCountHash; }}
+    public bool IsAttackPressed { get { return _isAttackPressed; } set { _isAttackPressed = value; }}
+    public Transform AttackPoint { get { return _attackPoint; }}
+    public float AttackRadius { get { return _attackRadius; }}
+    public LayerMask DestroyableLayer { get { return _destroyableLayer; }}
+    public float ComboWindowTime { get { return _comboWindowTime; }}
+    
+    
     void Awake()
     {
         _playerInput = new PlayerInput();
@@ -135,6 +162,8 @@ public class PlayerStateMachine : MonoBehaviour
         _isClimbingHash = Animator.StringToHash("isClimbing");
         _isGlidingHash = Animator.StringToHash("isGliding");
         _jumpCountHash = Animator.StringToHash("jumpCount");
+        _isAttackingHash = Animator.StringToHash("isAttacking");
+        _comboCountHash = Animator.StringToHash("comboCount");
 
         _playerInput.CharacterControls.Move.started += OnMovementInput;
         _playerInput.CharacterControls.Move.canceled += OnMovementInput;
@@ -183,11 +212,9 @@ public class PlayerStateMachine : MonoBehaviour
         if (_characterController.enabled)
             _characterController.Move(_appliedMovement * Time.deltaTime);
 
-        // Crouch toggle
         if (Input.GetKeyDown(KeyCode.LeftControl) || Input.GetKeyDown(KeyCode.RightControl))
             _isCrouchPressed = !_isCrouchPressed;
 
-        // Climb
         if (Input.GetKeyDown(KeyCode.E))
             _isClimbPressed = true;
         if (Input.GetKeyDown(KeyCode.C))
@@ -196,16 +223,17 @@ public class PlayerStateMachine : MonoBehaviour
             _isGlidePressed = false;
         }
 
-        // Glide
         if (Input.GetKeyDown(KeyCode.G))
             _isGlidePressed = true;
 
-        // Switch camera POV
         if (Input.GetKeyDown(KeyCode.Q))
         {
             if (_cameraManager != null)
                 _cameraManager.SwitchCamera();
         }
+        
+        if (Input.GetMouseButtonDown(0))
+            _isAttackPressed = true;
     }
 
     void HandleRotation()
@@ -299,6 +327,12 @@ public class PlayerStateMachine : MonoBehaviour
             Gizmos.color = Color.blue;
             Gizmos.DrawRay(_climbDetector.position, transform.forward * _climbCheckDistance);
             Gizmos.DrawWireSphere(_climbDetector.position, 0.05f);
+        }
+        
+        if (_attackPoint != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(_attackPoint.position, _attackRadius);
         }
     }
 }

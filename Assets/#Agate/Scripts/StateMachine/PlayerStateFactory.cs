@@ -10,7 +10,8 @@ enum PlayerStates
     fall,
     crouch,
     climb,
-    glide
+    glide,
+    combo
 }
 
 public class PlayerStateFactory
@@ -30,6 +31,7 @@ public class PlayerStateFactory
         _states[PlayerStates.crouch] = new PlayerCrouchState(_context, this);
         _states[PlayerStates.climb] = new PlayerClimbState(_context, this);
         _states[PlayerStates.glide] = new PlayerGlideState(_context, this);
+        _states[PlayerStates.combo] = new PlayerComboState(_context, this);
     }
 
     public PlayerBaseState Idle() { return _states[PlayerStates.idle]; }
@@ -41,4 +43,5 @@ public class PlayerStateFactory
     public PlayerBaseState Crouch() { return _states[PlayerStates.crouch]; }
     public PlayerBaseState Climb() { return _states[PlayerStates.climb]; }
     public PlayerBaseState Glide() { return _states[PlayerStates.glide]; }
+    public PlayerBaseState Combo() { return _states[PlayerStates.combo]; }
 }

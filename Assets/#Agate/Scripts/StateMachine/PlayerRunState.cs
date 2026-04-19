@@ -14,12 +14,15 @@ public class PlayerRunState : PlayerBaseState
 
   public override void UpdateState()
   {
-    Vector3 move = Ctx.GetCameraRelativeMovement(
-      Ctx.CurrentMovementInput.x,
-      Ctx.CurrentMovementInput.y);
+    if (!Ctx.DisableSubStateMovement)
+    {
+      Vector3 move = Ctx.GetCameraRelativeMovement(
+        Ctx.CurrentMovementInput.x,
+        Ctx.CurrentMovementInput.y);
 
-    Ctx.AppliedMovementX = move.x * Ctx.RunMultiplier;
-    Ctx.AppliedMovementZ = move.z * Ctx.RunMultiplier;
+      Ctx.AppliedMovementX = move.x * Ctx.RunMultiplier;
+      Ctx.AppliedMovementZ = move.z * Ctx.RunMultiplier;
+    }
     CheckSwitchStates();
   }
 

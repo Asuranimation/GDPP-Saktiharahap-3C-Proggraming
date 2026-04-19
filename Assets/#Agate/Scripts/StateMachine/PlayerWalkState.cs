@@ -14,15 +14,17 @@ public class PlayerWalkState : PlayerBaseState
 
   public override void UpdateState()
   {
-    Vector3 move = Ctx.GetCameraRelativeMovement(
-      Ctx.CurrentMovementInput.x,
-      Ctx.CurrentMovementInput.y);
+    if (!Ctx.DisableSubStateMovement)
+    {
+      Vector3 move = Ctx.GetCameraRelativeMovement(
+        Ctx.CurrentMovementInput.x,
+        Ctx.CurrentMovementInput.y);
 
-    Ctx.AppliedMovementX = move.x;
-    Ctx.AppliedMovementZ = move.z;
+      Ctx.AppliedMovementX = move.x;
+      Ctx.AppliedMovementZ = move.z;
+    }
     CheckSwitchStates();
   }
-
   public override void ExitState(){}
 
   public override void InitializeSubState(){}

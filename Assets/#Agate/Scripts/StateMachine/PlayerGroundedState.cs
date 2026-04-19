@@ -29,7 +29,11 @@ public class PlayerGroundedState : PlayerBaseState, IRootState
 
     public override void CheckSwitchStates()
     {
-        if (Ctx.IsClimbPressed && Ctx.IsInFrontOfClimbableWall())
+        if (Ctx.IsAttackPressed)
+        {
+            SwitchState(Factory.Combo());
+        }
+        else if (Ctx.IsClimbPressed && Ctx.IsInFrontOfClimbableWall())
             SwitchState(Factory.Climb());
         else if (Ctx.IsCrouchPressed)
             SwitchState(Factory.Crouch());

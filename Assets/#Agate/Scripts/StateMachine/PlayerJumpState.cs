@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerJumpState : PlayerBaseState, IRootState
 {
+  private Vector3 _forwardDirection;
+
   IEnumerator IJumpResetRoutine()
   {
     yield return new WaitForSeconds(.5f);
@@ -17,11 +19,13 @@ public class PlayerJumpState : PlayerBaseState, IRootState
 
   public override void EnterState(){
     InitializeSubState();
+    Ctx.DisableSubStateMovement = true;
     HandleJump();
   }
 
   public override void UpdateState(){
     HandleGravity();
+    HandleJumpForwardBoost();
     CheckSwitchStates();
   }
 
@@ -39,6 +43,8 @@ public class PlayerJumpState : PlayerBaseState, IRootState
 
   public override void ExitState(){
     Ctx.Animator.SetBool(Ctx.IsJumpingHash, false);
+    Ctx.DisableSubStateMovement = false;
+
     if (Ctx.IsJumpPressed) {
       Ctx.RequireNewJumpPress = true;
     }
@@ -71,6 +77,17 @@ public class PlayerJumpState : PlayerBaseState, IRootState
     Ctx.Animator.SetInteger(Ctx.JumpCountHash, Ctx.JumpCount);
     Ctx.CurrentMovementY = Ctx.InitialJumpVelocities[Ctx.JumpCount];
     Ctx.AppliedMovementY = Ctx.InitialJumpVelocities[Ctx.JumpCount];
+
+    _forwardDirection = Ctx.transform.forward;
+  }
+
+  void HandleJumpForwardBoost()
+  {
+    if (Ctx.IsJumpPressed && Ctx.CurrentMovementY > 0)
+    {
+      Ctx.AppliedMovementX += _forwardDirection.x * Ctx.JumpForwardHoldForce * Time.deltaTime;
+      Ctx.AppliedMovementZ += _forwardDirection.z * Ctx.JumpForwardHoldForce * Time.deltaTime;
+    }
   }
 
   public void HandleGravity() {

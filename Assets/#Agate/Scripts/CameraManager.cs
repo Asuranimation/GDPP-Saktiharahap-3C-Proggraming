@@ -4,24 +4,13 @@ using Cinemachine;
 
 public class CameraManager : MonoBehaviour
 {
-    [SerializeField] public CameraState CameraState;
+    [SerializeField] public CameraState CameraState = CameraState.ThirdPerson;
     [SerializeField] private CinemachineVirtualCamera _fpsCamera;
     [SerializeField] private CinemachineFreeLook _tpsCamera;
-    [SerializeField] private InputManager _inputManager;
 
     public Action OnChangePerspective;
 
-    private void Start()
-    {
-        _inputManager.OnChangePOV += SwitchCamera;
-    }
-
-    private void OnDestroy()
-    {
-        _inputManager.OnChangePOV -= SwitchCamera;
-    }
-
-    private void SwitchCamera()
+    public void SwitchCamera()
     {
         if (CameraState == CameraState.ThirdPerson)
         {
@@ -42,7 +31,11 @@ public class CameraManager : MonoBehaviour
 
     public void SetFPSClampedCamera(bool isClamped, Vector3 playerRotation)
     {
+        if (_fpsCamera == null) return;
+
         CinemachinePOV pov = _fpsCamera.GetCinemachineComponent<CinemachinePOV>();
+        if (pov == null) return;
+
         if (isClamped)
         {
             pov.m_HorizontalAxis.m_Wrap = false;
@@ -59,6 +52,7 @@ public class CameraManager : MonoBehaviour
 
     public void SetTPSFieldOfView(float fieldOfView)
     {
-        _tpsCamera.m_Lens.FieldOfView = fieldOfView;
+        if (_tpsCamera != null)
+            _tpsCamera.m_Lens.FieldOfView = fieldOfView;
     }
 }

@@ -12,9 +12,14 @@ public class PlayerRunState : PlayerBaseState
     Ctx.Animator.SetBool(Ctx.IsRunningHash, true);
   }
 
-  public override void UpdateState(){
-    Ctx.AppliedMovementX = Ctx.CurrentMovementInput.x * Ctx.RunMultiplier;
-    Ctx.AppliedMovementZ = Ctx.CurrentMovementInput.y * Ctx.RunMultiplier;
+  public override void UpdateState()
+  {
+    Vector3 move = Ctx.GetCameraRelativeMovement(
+      Ctx.CurrentMovementInput.x,
+      Ctx.CurrentMovementInput.y);
+
+    Ctx.AppliedMovementX = move.x * Ctx.RunMultiplier;
+    Ctx.AppliedMovementZ = move.z * Ctx.RunMultiplier;
     CheckSwitchStates();
   }
 

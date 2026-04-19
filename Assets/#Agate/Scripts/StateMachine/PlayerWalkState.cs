@@ -12,9 +12,14 @@ public class PlayerWalkState : PlayerBaseState
     Ctx.Animator.SetBool(Ctx.IsRunningHash, false);
   }
 
-  public override void UpdateState(){
-    Ctx.AppliedMovementX = Ctx.CurrentMovementInput.x;
-    Ctx.AppliedMovementZ = Ctx.CurrentMovementInput.y;
+  public override void UpdateState()
+  {
+    Vector3 move = Ctx.GetCameraRelativeMovement(
+      Ctx.CurrentMovementInput.x,
+      Ctx.CurrentMovementInput.y);
+
+    Ctx.AppliedMovementX = move.x;
+    Ctx.AppliedMovementZ = move.z;
     CheckSwitchStates();
   }
 

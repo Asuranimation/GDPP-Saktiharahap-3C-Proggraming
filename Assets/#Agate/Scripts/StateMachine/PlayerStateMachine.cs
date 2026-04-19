@@ -29,7 +29,7 @@ public class PlayerStateMachine : MonoBehaviour
 
     bool _isJumpPressed = false;
     float _initialJumpVelocity;
-    float _maxJumpHeight = 4.0f;
+    float _maxJumpHeight = 5.0f;
     float _maxJumpTime = .75f;
     bool _isJumping = false;
     int _isJumpingHash;
@@ -100,9 +100,9 @@ public class PlayerStateMachine : MonoBehaviour
     public int IsCrouchingHash { get { return _isCrouchingHash; }}
     public int IsClimbingHash { get { return _isClimbingHash; }}
     public int IsGlidingHash { get { return _isGlidingHash; }}
-    public bool IsCrouchPressed { get { return _isCrouchPressed; }}
+    public bool IsCrouchPressed { get { return _isCrouchPressed; } set { _isCrouchPressed = value; }}
     public bool IsClimbPressed { get { return _isClimbPressed; } set { _isClimbPressed = value; }}
-    public bool IsGlidePressed { get { return _isGlidePressed; }}
+    public bool IsGlidePressed { get { return _isGlidePressed; } set { _isGlidePressed = value; }}
     public float CrouchSpeed { get { return _crouchSpeed; }}
     public float CrouchColliderHeight { get { return _crouchColliderHeight; }}
     public float NormalColliderHeight { get { return _normalColliderHeight; }}

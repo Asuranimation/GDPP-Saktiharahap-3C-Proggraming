@@ -25,9 +25,15 @@ public class PlayerJumpState : PlayerBaseState, IRootState
     CheckSwitchStates();
   }
 
-  public override void CheckSwitchStates(){
-    if (Ctx.CharacterController.isGrounded) {
+  public override void CheckSwitchStates()
+  {
+    if (Ctx.CharacterController.isGrounded)
+    {
       SwitchState(Factory.Grounded());
+    }
+    else if (Ctx.IsGlidePressed)
+    {
+      SwitchState(Factory.Glide());
     }
   }
 

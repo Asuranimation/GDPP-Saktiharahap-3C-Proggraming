@@ -22,17 +22,13 @@ public abstract class PlayerBaseState
     public abstract void InitializeSubState();
 
     protected void SwitchState(PlayerBaseState newState){
-        // current state exits state
         ExitState();
 
-        // new state enters state
         newState.EnterState();
 
         if (_isRootState) {
-            // switch current state of context
             _ctx.CurrentState = newState;
         } else if (_currentSuperState != null) {
-            // set the current super states sub state to the new state
             _currentSuperState.SetSubState(newState);
         }
     }

@@ -1,12 +1,17 @@
 using UnityEngine;
 
-public class PlayerCrouchState : PlayerBaseState
+public class PlayerCrouchState : PlayerBaseState, IRootState
 {
     public PlayerCrouchState(PlayerStateMachine currentContext, PlayerStateFactory playerStateFactory)
-        : base(currentContext, playerStateFactory) {}
+        : base(currentContext, playerStateFactory)
+    {
+        IsRootState = true;
+    }
 
     public override void EnterState()
     {
+        InitializeSubState();
+
         Ctx.Animator.SetBool(Ctx.IsCrouchingHash, true);
         Ctx.Animator.SetBool(Ctx.IsWalkingHash, false);
         Ctx.Animator.SetBool(Ctx.IsRunningHash, false);
@@ -20,17 +25,8 @@ public class PlayerCrouchState : PlayerBaseState
 
     public override void UpdateState()
     {
-        if (Ctx.IsMovementPressed)
-        {
-            Ctx.AppliedMovementX = Ctx.CurrentMovementInput.x * Ctx.CrouchSpeed;
-            Ctx.AppliedMovementZ = Ctx.CurrentMovementInput.y * Ctx.CrouchSpeed;
-        }
-        else
-        {
-            Ctx.AppliedMovementX = 0;
-            Ctx.AppliedMovementZ = 0;
-        }
-
+        HandleGravity();
+        HandleCrouchMovement();
         CheckSwitchStates();
     }
 
@@ -47,6 +43,46 @@ public class PlayerCrouchState : PlayerBaseState
     public override void CheckSwitchStates()
     {
         if (!Ctx.IsCrouchPressed)
-            SwitchState(Factory.Grounded());
+        {
+            if (Ctx.IsMovementPressed && Ctx.IsRunPressed)
+            {
+                SwitchState(Factory.Run());
+            }
+            else if (Ctx.IsMovementPressed)
+            {
+                SwitchState(Factory.Walk());
+            }
+            else
+            {
+                SwitchState(Factory.Grounded());
+            }
+        }
+    }
+
+    private void HandleCrouchMovement()
+    {
+        if (Ctx.IsMovementPressed)
+        {
+            Vector3 move = Ctx.GetCameraRelativeMovement(
+                Ctx.CurrentMovementInput.x,
+                Ctx.CurrentMovementInput.y);
+
+            Ctx.AppliedMovementX = move.x * Ctx.CrouchSpeed;
+            Ctx.AppliedMovementZ = move.z * Ctx.CrouchSpeed;
+        }
+        else
+        {
+            Ctx.AppliedMovementX = 0;
+            Ctx.AppliedMovementZ = 0;
+        }
+
+        float velocity = new Vector2(Ctx.AppliedMovementX, Ctx.AppliedMovementZ).magnitude;
+        Ctx.Animator.SetFloat("Velocity", velocity);
+    }
+
+    public void HandleGravity()
+    {
+        Ctx.CurrentMovementY = Ctx.Gravity;
+        Ctx.AppliedMovementY = Ctx.Gravity;
     }
 }
